@@ -1,0 +1,138 @@
+parameters:
+    radish.broker.amqp_factory.class: 'Radish\Broker\AMQPFactory'
+    radish.broker.connection.class: 'Radish\Broker\Connection'
+    radish.broker.exchange.class: 'Radish\Broker\Exchange'
+    radish.broker.exchange_registry.class: 'Radish\Broker\ExchangeRegistry'
+    radish.broker.radish.class: 'Radish\Broker\Queue'
+    radish.broker.queue_binding.class: 'Radish\Broker\QueueBinding'
+    radish.broker.queue_registry.class: 'Radish\Broker\QueueRegistry'
+    radish.consumer.class: 'Radish\Consumer\Consumer'
+    radish.consumer_factory.class: 'Radish\Consumer\ConsumerFactory'
+    radish.middleware_registry.class: 'Radish\Middleware\MiddlewareRegistry'
+    radish.middleware.ack.class: 'Radish\Middleware\Ack\AckMiddleware'
+    radish.middleware.doctrine.connection.class: 'Radish\Middleware\Doctrine\ConnectionMiddleware'
+    radish.middleware.doctrine.object_manager.class: 'Radish\Middleware\Doctrine\ObjectManagerMiddleware'
+    radish.middleware.exception_catcher.class: 'Radish\Middleware\ExceptionCatcher\ExceptionCatcherMiddleware'
+    radish.middleware.max_execution_time.class: 'Radish\Middleware\MaxExecutionTime\MaxExecutionTimeMiddleware'
+    radish.middleware.max_messages.class: 'Radish\Middleware\MaxMessages\MaxMessagesMiddleware'
+    radish.middleware.retry.class: 'Radish\Middleware\Retry\RetryMiddleware'
+    radish.middleware.signal_handler.class: 'Radish\Middleware\SignalHandler\SignalHandlerMiddleware'
+    radish.producer.class: 'Radish\Producer\Producer'
+    radish.producer_factory.class: 'Radish\Producer\ProducerFactory'
+    radish.command.consume.class: 'Radish\RadishBundle\Command\ConsumeCommand'
+    radish.command.setup.class: 'Radish\RadishBundle\Command\SetupCommand'
+
+services:
+    radish.broker.amqp_factory:
+        class: %radish.broker.amqp_factory.class%
+
+    radish.broker.exchange_registry:
+        class: %radish.broker.exchange_registry.class%
+
+    radish.broker.queue_registry:
+        class: %radish.broker.queue_registry.class%
+
+    radish.consumer_factory:
+        class: %radish.consumer_factory.class%
+        arguments:
+            - @radish.broker.queue_registry
+            - @radish.middleware_registry
+            - @logger
+        tags:
+            - { name: monolog.logger, channel: queue }
+
+    radish.consumer:
+        class: %radish.consumer.class%
+        factory: ['@radish.consumer_factory', 'create']
+        abstract: true
+
+    radish.middleware_registry:
+        class: %radish.middleware_registry.class%
+        arguments:
+            - @service_container
+
+    radish.middleware.ack:
+        class: %radish.middleware.ack.class%
+        arguments:
+            - @logger
+        tags:
+            - { name: radish.middleware, middleware: ack }
+            - { name: monolog.logger, channel: queue }
+
+    radish.middleware.doctrine.connection:
+        class: %radish.middleware.doctrine.connection.class%
+        arguments:
+            - ['@doctrine.dbal.default_connection']
+            - @logger
+        tags:
+            - { name: radish.middleware, middleware: doctrine_connection }
+            - { name: monolog.logger, channel: queue }
+
+    radish.middleware.doctrine.object_manager:
+        class: %radish.middleware.doctrine.object_manager.class%
+        arguments:
+            - @doctrine
+            - @logger
+        tags:
+            - { name: radish.middleware, middleware: doctrine_object_manager }
+            - { name: monolog.logger, channel: queue }
+
+    radish.middleware.exception_catcher:
+        class: %radish.middleware.exception_catcher.class%
+        arguments:
+            - @logger
+        tags:
+            - { name: radish.middleware, middleware: exception_catcher }
+            - { name: monolog.logger, channel: queue }
+
+    radish.middleware.max_execution_time:
+        class: %radish.middleware.max_execution_time.class%
+        arguments:
+            - @logger
+        tags:
+            - { name: radish.middleware, middleware: max_execution_time }
+            - { name: monolog.logger, channel: queue }
+
+    radish.middleware.max_messages:
+        class: %radish.middleware.max_messages.class%
+        arguments:
+            - @logger
+        tags:
+            - { name: radish.middleware, middleware: max_messages }
+            - { name: monolog.logger, channel: queue }
+
+    radish.middleware.retry:
+        class: %radish.middleware.retry.class%
+        arguments:
+            - @radish.broker.exchange_registry
+            - @logger
+        tags:
+            - { name: radish.middleware, middleware: retry }
+            - { name: monolog.logger, channel: queue }
+
+    radish.middleware.signal_handler:
+        class: %radish.middleware.signal_handler.class%
+        arguments:
+            - @logger
+        tags:
+            - { name: radish.middleware, middleware: signal_handler }
+            - { name: monolog.logger, channel: queue }
+
+    radish.producer_factory:
+        class: %radish.producer_factory.class%
+        arguments:
+            - @radish.broker.exchange_registry
+
+    radish.producer:
+        class: %radish.producer.class%
+        factory: ['@radish.producer_factory', 'create']
+        abstract: true
+
+    radish.command.consume:
+        class: %radish.command.consume.class%
+
+    radish.command.setup:
+        class: %radish.command.setup.class%
+        arguments:
+            - @radish.broker.exchange_registry
+            - @radish.broker.queue_registry
