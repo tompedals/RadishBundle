@@ -1,6 +1,6 @@
 <?php
 
-namespace Radish\QueueBundle;
+namespace Radish\RadishBundle;
 
 use Radish\RadishBundle\DependencyInjection\Compiler\RegisterMiddlewarePass;
 use Symfony\Component\Console\Application;
