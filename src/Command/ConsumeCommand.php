@@ -15,7 +15,7 @@ class ConsumeCommand extends ContainerAwareCommand
 {
     public function __construct()
     {
-        parent::__construct('queue:consume');
+        parent::__construct('radish:consume');
     }
 
     public function configure()

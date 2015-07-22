@@ -21,7 +21,7 @@ class SetupCommand extends ContainerAwareCommand
         $this->exchangeRegistry = $exchangeRegistry;
         $this->queueRegistry = $queueRegistry;
 
-        parent::__construct('queue:setup');
+        parent::__construct('radish:setup');
     }
 
     public function execute(InputInterface $input, OutputInterface $output)
