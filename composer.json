@@ -1,0 +1,35 @@
+{
+    "name": "radish/radish-bundle",
+    "description": "",
+    "homepage": "http://github.com/tompedals/radish-bundle",
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Tom Graham",
+            "email": "tom@heyupdate.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "radish/radish": "~0.1",
+        "symfony/dependency-injection": "~2.6",
+        "symfony/config": "~2.6",
+        "symfony/http-kernel": "~2.6",
+        "symfony/yaml": "~2.6"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "*",
+        "mockery/mockery": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Radish\\RadishBundle\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Radish\\RadishBundle\\": "tests/"
+        }
+    }
+}
