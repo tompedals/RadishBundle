@@ -13,10 +13,10 @@
     "require": {
         "php": ">=5.4.0",
         "radish/radish": "~0.1",
-        "symfony/dependency-injection": "~2.7",
-        "symfony/config": "~2.7",
-        "symfony/http-kernel": "~2.7",
-        "symfony/yaml": "~2.7"
+        "symfony/dependency-injection": "~2.6",
+        "symfony/config": "~2.6",
+        "symfony/http-kernel": "~2.6",
+        "symfony/yaml": "~2.6"
     },
     "require-dev": {
         "phpunit/phpunit": "*",
