@@ -15,6 +15,7 @@ parameters:
     radish.middleware.exception_catcher.class: 'Radish\Middleware\ExceptionCatcher\ExceptionCatcherMiddleware'
     radish.middleware.max_execution_time.class: 'Radish\Middleware\MaxExecutionTime\MaxExecutionTimeMiddleware'
     radish.middleware.max_messages.class: 'Radish\Middleware\MaxMessages\MaxMessagesMiddleware'
+    radish.middleware.memory_limit.class: 'Radish\Middleware\MemoryLimit\MemoryLimitMiddleware'
     radish.middleware.retry.class: 'Radish\Middleware\Retry\RetryMiddleware'
     radish.middleware.signal_handler.class: 'Radish\Middleware\SignalHandler\SignalHandlerMiddleware'
     radish.producer.class: 'Radish\Producer\Producer'
@@ -99,6 +100,14 @@ services:
             - @logger
         tags:
             - { name: radish.middleware, middleware: max_messages }
+            - { name: monolog.logger, channel: queue }
+
+    radish.middleware.memory_limit:
+        class: %radish.middleware.memory_limit.class%
+        arguments:
+            - @logger
+        tags:
+            - { name: radish.middleware, middleware: memory_limit }
             - { name: monolog.logger, channel: queue }
 
     radish.middleware.retry:

@@ -20,7 +20,7 @@ class ConsumeCommand extends ContainerAwareCommand
 
     public function configure()
     {
-        $this->addArgument('consumer', InputArgument::REQUIRED, 'The consumer to consume');
+        $this->addArgument('consumer', InputArgument::REQUIRED, 'The name of the consumer to consume');
     }
 
     public function execute(InputInterface $input, OutputInterface $output)
