@@ -31,5 +31,10 @@
         "psr-4": {
             "Radish\\RadishBundle\\": "tests/"
         }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.1.x-dev"
+        }
     }
 }
