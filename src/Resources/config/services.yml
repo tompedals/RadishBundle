@@ -21,7 +21,7 @@ parameters:
     radish.producer.class: "Radish\\Producer\\Producer"
     radish.producer_factory.class: "Radish\\Producer\\ProducerFactory"
     radish.command.consume.class: "Radish\\RadishBundle\\Command\\ConsumeCommand"
-    radish.command.setup.class: "Radish\\RadishBundle\\Command\\SetupCommandd"
+    radish.command.setup.class: "Radish\\RadishBundle\\Command\\SetupCommand"
 
 services:
     radish.broker.amqp_factory:
