@@ -46,6 +46,7 @@ class Configuration implements ConfigurationInterface
                             ->booleanNode('durable')->defaultTrue()->end()
                             ->scalarNode('exchange')->isRequired()->end()
                             ->scalarNode('dead_letter_exchange')->end()
+                            ->scalarNode('max_priority')->end()
                             ->scalarNode('routing_key')->isRequired()->end()
                         ->end()
                     ->end()
