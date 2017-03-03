@@ -6,9 +6,13 @@ parameters:
     radish.broker.radish.class: "Radish\\Broker\\Queue"
     radish.broker.queue_binding.class: "Radish\\Broker\\QueueBinding"
     radish.broker.queue_registry.class: "Radish\\Broker\\QueueRegistry"
+    radish.broker.queue_loader.class: "Radish\\Broker\\QueueLoader"
     radish.consumer.class: "Radish\\Consumer\\Consumer"
     radish.consumer_factory.class: "Radish\\Consumer\\ConsumerFactory"
+    radish.poller.class: "Radish\\Consumer\\Poller"
+    radish.poller_factory.class: "Radish\\Consumer\\PollerFactory"
     radish.middleware_registry.class: "Radish\\Middleware\\MiddlewareRegistry"
+    radish.middleware_loader.class: "Radish\\Middleware\\MiddlewareLoader"
     radish.middleware.ack.class: "Radish\\Middleware\\Ack\\AckMiddleware"
     radish.middleware.doctrine.connection.class: "Radish\\Middleware\\Doctrine\\ConnectionMiddleware"
     radish.middleware.doctrine.object_manager.class: "Radish\\Middleware\\Doctrine\\ObjectManagerMiddleware"
@@ -21,6 +25,7 @@ parameters:
     radish.producer.class: "Radish\\Producer\\Producer"
     radish.producer_factory.class: "Radish\\Producer\\ProducerFactory"
     radish.command.consume.class: "Radish\\RadishBundle\\Command\\ConsumeCommand"
+    radish.command.poll.class: "Radish\\RadishBundle\\Command\\PollCommand"
     radish.command.setup.class: "Radish\\RadishBundle\\Command\\SetupCommand"
 
 services:
@@ -30,14 +35,27 @@ services:
     radish.broker.exchange_registry:
         class: "%radish.broker.exchange_registry.class%"
 
+    radish.broker.queue_loader:
+        class: "%radish.broker.queue_loader.class%"
+        arguments: ['@radish.broker.queue_registry']
+
     radish.broker.queue_registry:
         class: "%radish.broker.queue_registry.class%"
 
     radish.consumer_factory:
         class: "%radish.consumer_factory.class%"
         arguments:
-            - "@radish.broker.queue_registry"
-            - "@radish.middleware_registry"
+            - "@radish.broker.queue_loader"
+            - "@radish.middleware_loader"
+            - "@logger"
+        tags:
+            - { name: monolog.logger, channel: queue }
+
+    radish.poller_factory:
+        class: "%radish.poller_factory.class%"
+        arguments:
+            - "@radish.broker.queue_loader"
+            - "@radish.middleware_loader"
             - "@logger"
         tags:
             - { name: monolog.logger, channel: queue }
@@ -46,6 +64,15 @@ services:
         class: "%radish.consumer.class%"
         factory: ["@radish.consumer_factory", "create"]
         abstract: true
+
+    radish.poller:
+        class: "%radish.poller.class%"
+        factory: ["@radish.poller_factory", "create"]
+        abstract: true
+
+    radish.middleware_loader:
+        class: "%radish.middleware_loader.class%"
+        arguments: ['@radish.middleware_registry']
 
     radish.middleware_registry:
         class: "%radish.middleware_registry.class%"
@@ -139,6 +166,9 @@ services:
 
     radish.command.consume:
         class: "%radish.command.consume.class%"
+
+    radish.command.poll:
+        class: "%radish.command.poll.class%"
 
     radish.command.setup:
         class: "%radish.command.setup.class%"

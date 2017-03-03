@@ -35,6 +35,9 @@ class RadishExtension extends Extension
         foreach ($config['consumers'] as $name => $consumer) {
             $this->loadConsumer($name, $consumer, $container);
         }
+        foreach ($config['pollers'] as $name => $consumer) {
+            $this->loadPoller($name, $consumer, $container);
+        }
 
         foreach ($config['producers'] as $name => $producer) {
             $this->loadProducer($name, $producer, $container);
@@ -60,13 +63,37 @@ class RadishExtension extends Extension
         }
 
         $definition = new DefinitionDecorator('radish.consumer');
-        $definition->setArguments([
+
+        $args = [
             array_keys($consumer['queues']),
             $consumer['middleware'],
             $workers
-        ]);
+        ];
+
+        $definition->setArguments($args);
 
         $container->setDefinition(sprintf('radish.consumer.%s', $name), $definition);
+    }
+
+    public function loadPoller($name, array $poller, ContainerBuilder $container)
+    {
+        $workers = [];
+        foreach ($poller['queues'] as $queueName => $queue) {
+            $workers[$queueName] = new Reference($queue['worker']);
+        }
+
+        $definition = new DefinitionDecorator('radish.poller');
+
+        $args = [
+            array_keys($poller['queues']),
+            $poller['middleware'],
+            $workers,
+            $poller['interval']
+        ];
+
+        $definition->setArguments($args);
+
+        $container->setDefinition(sprintf('radish.poller.%s', $name), $definition);
     }
 
     private function loadProducer($name, array $producer, ContainerBuilder $container)

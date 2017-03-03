@@ -19,6 +19,7 @@ class RadishBundle extends Bundle
     public function registerCommands(Application $application)
     {
         $application->add($this->container->get('radish.command.consume'));
+        $application->add($this->container->get('radish.command.poll'));
         $application->add($this->container->get('radish.command.setup'));
     }
 }
