@@ -2,6 +2,7 @@
 
 namespace Radish\RadishBundle\DependencyInjection;
 
+use Symfony\Component\Config\Definition\ArrayNode;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -71,36 +72,46 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
-                ->arrayNode('consumers')
-                    ->requiresAtLeastOneElement()
-                    ->useAttributeAsKey('name')
-                    ->prototype('array')
-                        ->validate()
-                            ->ifTrue(function ($v) {
-                                return isset($v['queues']) && !empty($v['queues']) && isset($v['queue']) && !empty($v['queue']);
-                            })
-                            ->thenInvalid('A consumer configuration can contain either "queue" or "queues", but not both.')
-                        ->end()
-                        ->children()
-                            ->scalarNode('queue')->end()
-                            ->scalarNode('worker')->end()
-                            ->arrayNode('queues')
-                                ->useAttributeAsKey('queue')
-                                ->prototype('array')
-                                    ->children()
-                                        ->scalarNode('queue')->end()
-                                        ->scalarNode('worker')->end()
-                                    ->end()
-                                ->end()
-                            ->end()
-                            ->arrayNode('middleware')
-                                ->prototype('variable')->end()
-                            ->end()
-                        ->end()
-                    ->end()
-                ->end()
+                ->append($this->consumerNode('consumers'))
+                ->append($this->consumerNode('pollers'))
             ->end();
 
         return $treeBuilder;
+    }
+
+    private function consumerNode($type)
+    {
+        $builder = new TreeBuilder();
+        $node = $builder->root($type);
+
+        $node->requiresAtLeastOneElement()
+            ->useAttributeAsKey('name')
+            ->prototype('array')
+                ->validate()
+                    ->ifTrue(function ($v) {
+                        return isset($v['queues']) && !empty($v['queues']) && isset($v['queue']) && !empty($v['queue']);
+                    })
+                    ->thenInvalid('A consumer configuration can contain either "queue" or "queues", but not both.')
+                ->end()
+                ->children()
+                    ->scalarNode('queue')->end()
+                    ->scalarNode('worker')->end()
+                    ->arrayNode('queues')
+                        ->useAttributeAsKey('queue')
+                        ->prototype('array')
+                            ->children()
+                                ->scalarNode('queue')->end()
+                                ->scalarNode('worker')->end()
+                            ->end()
+                        ->end()
+                    ->end()
+                    ->arrayNode('middleware')
+                        ->prototype('variable')->end()
+                    ->end()
+                    ->scalarNode('interval')->end()
+            ->end()
+        ->end();
+
+        return $node;
     }
 }
