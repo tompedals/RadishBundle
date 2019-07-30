@@ -20,6 +20,7 @@ parameters:
     radish.middleware.max_execution_time.class: "Radish\\Middleware\\MaxExecutionTime\\MaxExecutionTimeMiddleware"
     radish.middleware.max_messages.class: "Radish\\Middleware\\MaxMessages\\MaxMessagesMiddleware"
     radish.middleware.memory_limit.class: "Radish\\Middleware\\MemoryLimit\\MemoryLimitMiddleware"
+    radish.middleware.non_blocking_retry.class: "Radish\\Middleware\\Retry\\NonBlockingRetryMiddleware"
     radish.middleware.retry.class: "Radish\\Middleware\\Retry\\RetryMiddleware"
     radish.middleware.signal_handler.class: "Radish\\Middleware\\SignalHandler\\SignalHandlerMiddleware"
     radish.producer.class: "Radish\\Producer\\Producer"
@@ -135,6 +136,15 @@ services:
             - "@logger"
         tags:
             - { name: radish.middleware, middleware: memory_limit }
+            - { name: monolog.logger, channel: queue }
+
+    radish.middleware.non_blocking_retry:
+        class: "%radish.middleware.non_blocking_retry.class%"
+        arguments:
+            - "@radish.broker.exchange_registry"
+            - "@logger"
+        tags:
+            - { name: radish.middleware, middleware: non_blocking_retry }
             - { name: monolog.logger, channel: queue }
 
     radish.middleware.retry:
