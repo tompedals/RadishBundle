@@ -10,6 +10,12 @@
             "email": "tom@heyupdate.com"
         }
     ],
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/jadu/radish.git"
+        }
+    ],
     "require": {
         "php": ">=5.4.0",
         "radish/radish": "~0.3",
