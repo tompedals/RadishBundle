@@ -1,7 +1,7 @@
 {
-    "name": "radish/radish-bundle",
+    "name": "jadu/radish-bundle",
     "description": "",
-    "homepage": "http://github.com/tompedals/radish-bundle",
+    "homepage": "https://github.com/jadu/RadishBundle",
     "type": "symfony-bundle",
     "license": "MIT",
     "authors": [
@@ -10,15 +10,9 @@
             "email": "tom@heyupdate.com"
         }
     ],
-    "repositories": [
-        {
-            "type": "git",
-            "url": "https://github.com/jadu/radish.git"
-        }
-    ],
     "require": {
         "php": ">=5.4.0",
-        "radish/radish": "~0.3",
+        "jadu/radish": "~0.3",
         "symfony/dependency-injection": "~2.6|~3.0",
         "symfony/config": "~2.6|~3.0",
         "symfony/http-kernel": "~2.6|~3.0",
