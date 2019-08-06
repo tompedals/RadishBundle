@@ -1,19 +1,13 @@
 {
-    "name": "radish/radish-bundle",
+    "name": "jadu/radish-bundle",
     "description": "",
-    "homepage": "http://github.com/tompedals/radish-bundle",
+    "homepage": "https://github.com/jadu/RadishBundle",
     "type": "symfony-bundle",
     "license": "MIT",
     "authors": [
         {
             "name": "Tom Graham",
             "email": "tom@heyupdate.com"
-        }
-    ],
-    "repositories": [
-        {
-            "type": "git",
-            "url": "https://github.com/jadu/radish.git"
         }
     ],
     "require": {
