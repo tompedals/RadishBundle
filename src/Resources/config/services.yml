@@ -17,6 +17,7 @@ parameters:
     radish.middleware.doctrine.connection.class: "Radish\\Middleware\\Doctrine\\ConnectionMiddleware"
     radish.middleware.doctrine.object_manager.class: "Radish\\Middleware\\Doctrine\\ObjectManagerMiddleware"
     radish.middleware.exception_catcher.class: "Radish\\Middleware\\ExceptionCatcher\\ExceptionCatcherMiddleware"
+    radish.middleware.logger.class: "Radish\\Middleware\\Logger\\LoggerMiddleware"
     radish.middleware.max_execution_time.class: "Radish\\Middleware\\MaxExecutionTime\\MaxExecutionTimeMiddleware"
     radish.middleware.max_messages.class: "Radish\\Middleware\\MaxMessages\\MaxMessagesMiddleware"
     radish.middleware.memory_limit.class: "Radish\\Middleware\\MemoryLimit\\MemoryLimitMiddleware"
@@ -112,6 +113,14 @@ services:
             - "@logger"
         tags:
             - { name: radish.middleware, middleware: exception_catcher }
+            - { name: monolog.logger, channel: queue }
+
+    radish.middleware.logger:
+        class: "%radish.middleware.logger.class%"
+        arguments:
+            - "@logger"
+        tags:
+            - { name: radish.middleware, middleware: logger }
             - { name: monolog.logger, channel: queue }
 
     radish.middleware.max_execution_time:
