@@ -11,16 +11,16 @@
         }
     ],
     "require": {
-        "php": ">=5.4.0",
-        "jadu/radish": "^1.0",
+        "php": ">=7.1.0",
+        "jadu/radish": "~2.0",
         "symfony/dependency-injection": "~2.6|~3.0",
         "symfony/config": "~2.6|~3.0",
         "symfony/http-kernel": "~2.6|~3.0",
         "symfony/yaml": "~2.6|~3.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "*",
-        "mockery/mockery": "*"
+        "phpunit/phpunit": "~6.0",
+        "mockery/mockery": "~1.0"
     },
     "autoload": {
         "psr-4": {
