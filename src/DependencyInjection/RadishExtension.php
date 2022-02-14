@@ -32,6 +32,8 @@ class RadishExtension extends Extension
             $config['queues']
         ]);
 
+        $container->setParameter('radish.consumers', $config['consumers']);
+
         foreach ($config['consumers'] as $name => $consumer) {
             $this->loadConsumer($name, $consumer, $container);
         }
